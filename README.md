@@ -4,9 +4,9 @@ Type checked immutable actions and state for redux.
 
 - actions are immutables and type checked
 - state is immutable and type checked
-- action are dfined as tcomb structs: constructors can be used as action creators
+- action are defined as tcomb structs: constructors can be used as **action creators**
 - `actionTypes` constants are not required
-- default reducer implementation (no `switch` required)
+- default reducer implementation (`switch` not required)
 
 # Workflow
 
