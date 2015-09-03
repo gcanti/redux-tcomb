@@ -1,18 +1,20 @@
+Immutable and type checked state / actions for redux
+
 # Why?
 
 ## Primary goals
 
 - actions are naked (*), immutables and type checked
 - state is naked (*), immutable and type checked
-- action are defined as [tcomb](https://github.com/gcanti/tcomb) structs, this means that constructors can be used as **action creators**
+- actions are defined as [tcomb](https://github.com/gcanti/tcomb) structs, this means that constructors can be used as **action creators**
 
 (*) works like regular objects and arrays
 
 ## Secondary goals
 
-- Get rid of constants
-- Get rid of action creators
-- Get rid of `switch`
+- get rid of constants
+- get rid of action creators
+- get rid of `switch`
 
 # Workflow
 
