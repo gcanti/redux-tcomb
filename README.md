@@ -1,22 +1,28 @@
-Type checked immutable actions and state for redux.
+# Why?
 
-# Features
+## Primary goals
 
-- actions are immutables and type checked
-- state is immutable and type checked
-- action are defined as tcomb structs: constructors can be used as **action creators**
-- `actionTypes` constants are not required
-- default reducer implementation (`switch` not required)
+- actions are naked (*), immutables and type checked
+- state is naked (*), immutable and type checked
+- action are defined as [tcomb](https://github.com/gcanti/tcomb) structs, this means that constructors can be used as **action creators**
+
+(*) works like regular objects and arrays
+
+## Secondary goals
+
+- Get rid of constants
+- Get rid of action creators
+- Get rid of `switch`
 
 # Workflow
 
 1. define the state structure
 2. define the actions and their effect on state (patch functions)
-3. wire them up and get a default reducer implementation
+3. wire them up and grab the automatically generated reducer
 
 # Example
 
-## 1.
+## 1. Type checked state
 
 ```js
 // State.js
@@ -27,55 +33,79 @@ const Todo = t.struct({
   id: t.Number,         // a required number
   text: t.String,       // a required string
   completed: t.Boolean  // a required boolean
-}, 'Todo');
+}, 'Todo'); // <= give the type a name for better error messages
 
-export default t.list(Todo, 'State'); // a list of `Todo`s
+export default t.list(Todo, 'State'); // the state is a list of `Todo`s
 ```
 
-## 2.
+Type checked state means...
+
+```js
+import State from './State';
+
+// try to mess up with the state
+new State(1); // => will throw "[tcomb] Invalid value 1 supplied to State (expected an array of Todo)"
+const state = new State([]): // => ok, state is immutable
+```
+
+# 2. Type checked actions
 
 ```js
 // actions.js
 
-import { t, createUnion } from 'redux-tcomb';
+import { t } from 'redux-tcomb';
 
-// t.struct(props, name) defines a JavaScript class
-const AddTodo = t.struct({
+// defines an object like { text: 'Build my first Redux app' }
+export const ADD_TODO = t.struct({
   text: t.String
-}, 'AddTodo'); // <= give the type a name for better error messages
+}, 'ADD_TODO');
 
+// defines an object like { id: 1, text: 'Text is changed' }
+export const EDIT_TODO = t.struct({
+  id: t.Number,
+  text: t.String
+}, 'EDIT_TODO');
+
+// no constants in the action definitions
+// constants are defined as export names
+```
+
+Type checked actions means...
+
+```js
+const action = ADD_TODO({}); // => throws "[tcomb] Invalid value undefined supplied to ADD_TODO/text: String"
+const action = ADD_TODO({ text: 'Build my first Redux app' }); // => ok, action is immutable
+```
+
+## 2.1 Define the **patch function** for each action
+
+```js
 // a patch is a function state -> state
-AddTodo.prototype.patch = function (state) {
+ADD_TODO.prototype.patch = function (state) {
+
+  // tcomb immutable helpers
   return t.update(state, { $push: [{
-    id: state.reduce((maxId, todo) => Math.max(todo.id, maxId), -1) + 1,
+    id: getNextId(), // somehow retrieve the next todo id...
     text: this.text,
     completed: false
   }] });
+
 };
-
-// no constants in the action definitions...
-const EditTodo = t.struct({
-  id: t.Number,
-  text: t.String
-}, 'EditTodo');
-
-// ...constants are defined here as export names
-export default createUnion({
-  ADD_TODO: AddTodo,
-  EDIT_TODO: EditTodo
-});
 ```
 
-## 3.
+Time to wire them up...
+
+## 3. Automatically generated reducer
 
 ```js
 import { createStore } from 'redux';
 import State from './State';
-import Action from './actions';
-import { createReducer } from 'redux-tcomb';
+import * as actions from './actions';
+import { createUnion, createReducer } from 'redux-tcomb';
 
-const initialState = State([]);
-const reducer = createReducer(initialState, Action);
+const initialState = State([]); // the initial state
+const Action = createUnion(actions); // a type representing the union of all the actions
+const reducer = createReducer(initialState, Action); // no need to implement the reducer
 const store = createStore(reducer);
 
 store.dispatch({
@@ -85,9 +115,3 @@ store.dispatch({
 
 store.getState(); // => { todos: [ { id: 0, text: 'Build my first Redux app', completed: false } ] }
 ```
-
-# API
-
-## createUnion(actions: {key: [string]: type}, [name: string])
-
-## createReducer(initialState: State, Action: type)
