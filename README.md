@@ -29,7 +29,7 @@ const Todo = t.struct({
   completed: t.Boolean  // a required boolean
 }, 'Todo');
 
-export const State = t.list(Todo, 'State'); // a list of `Todo`s
+export default t.list(Todo, 'State'); // a list of `Todo`s
 ```
 
 ## 2.
@@ -60,7 +60,7 @@ const EditTodo = t.struct({
 }, 'EditTodo');
 
 // ...constants are defined here as export names
-export const Action = createUnion({
+export default createUnion({
   ADD_TODO: AddTodo,
   EDIT_TODO: EditTodo
 });
@@ -70,8 +70,8 @@ export const Action = createUnion({
 
 ```js
 import { createStore } from 'redux';
-import { State } from './State';
-import { Action } from './actions';
+import State from './State';
+import Action from './actions';
 import { createReducer } from 'redux-tcomb';
 
 const initialState = State([]);
