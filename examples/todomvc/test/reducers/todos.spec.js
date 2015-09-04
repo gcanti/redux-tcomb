@@ -1,6 +1,13 @@
 import expect from 'expect';
-import todos from '../../reducers/todos';
-import * as types from '../../constants/ActionTypes';
+import createReducer from '../../createReducer';
+
+const initialState = [{
+  text: 'Use Redux',
+  completed: false,
+  id: 0
+}];
+
+const todos = createReducer(initialState);
 
 describe('todos reducer', () => {
   it('should handle initial state', () => {
@@ -16,7 +23,7 @@ describe('todos reducer', () => {
   it('should handle ADD_TODO', () => {
     expect(
       todos([], {
-        type: types.ADD_TODO,
+        type: 'ADD_TODO',
         text: 'Run the tests'
       })
     ).toEqual([{
@@ -31,44 +38,44 @@ describe('todos reducer', () => {
         completed: false,
         id: 0
       }], {
-        type: types.ADD_TODO,
+        type: 'ADD_TODO',
         text: 'Run the tests'
       })
     ).toEqual([{
-      text: 'Run the tests',
-      completed: false,
-      id: 1
-    }, {
       text: 'Use Redux',
       completed: false,
       id: 0
+    }, {
+      text: 'Run the tests',
+      completed: false,
+      id: 1
     }]);
 
     expect(
       todos([{
+        text: 'Use Redux',
+        completed: false,
+        id: 0
+      }, {
         text: 'Run the tests',
         completed: false,
         id: 1
-      }, {
-        text: 'Use Redux',
-        completed: false,
-        id: 0
       }], {
-        type: types.ADD_TODO,
+        type: 'ADD_TODO',
         text: 'Fix the tests'
       })
     ).toEqual([{
-      text: 'Fix the tests',
+      text: 'Use Redux',
       completed: false,
-      id: 2
+      id: 0
     }, {
       text: 'Run the tests',
       completed: false,
       id: 1
     }, {
-      text: 'Use Redux',
+      text: 'Fix the tests',
       completed: false,
-      id: 0
+      id: 2
     }]);
   });
 
@@ -83,7 +90,7 @@ describe('todos reducer', () => {
         completed: false,
         id: 0
       }], {
-        type: types.DELETE_TODO,
+        type: 'DELETE_TODO',
         id: 1
       })
     ).toEqual([{
@@ -104,7 +111,7 @@ describe('todos reducer', () => {
         completed: false,
         id: 0
       }], {
-        type: types.EDIT_TODO,
+        type: 'EDIT_TODO',
         text: 'Fix the tests',
         id: 1
       })
@@ -130,7 +137,7 @@ describe('todos reducer', () => {
         completed: false,
         id: 0
       }], {
-        type: types.COMPLETE_TODO,
+        type: 'COMPLETE_TODO',
         id: 1
       })
     ).toEqual([{
@@ -155,7 +162,7 @@ describe('todos reducer', () => {
         completed: false,
         id: 0
       }], {
-        type: types.COMPLETE_ALL
+        type: 'COMPLETE_ALL'
       })
     ).toEqual([{
       text: 'Run the tests',
@@ -178,7 +185,7 @@ describe('todos reducer', () => {
         completed: true,
         id: 0
       }], {
-        type: types.COMPLETE_ALL
+        type: 'COMPLETE_ALL'
       })
     ).toEqual([{
       text: 'Run the tests',
@@ -202,7 +209,7 @@ describe('todos reducer', () => {
         completed: false,
         id: 0
       }], {
-        type: types.CLEAR_COMPLETED
+        type: 'CLEAR_COMPLETED'
       })
     ).toEqual([{
       text: 'Use Redux',
@@ -214,12 +221,12 @@ describe('todos reducer', () => {
   it('should not generate duplicate ids after CLEAR_COMPLETED', () => {
     expect(
       [{
-        type: types.COMPLETE_TODO,
+        type: 'COMPLETE_TODO',
         id: 0
       }, {
-        type: types.CLEAR_COMPLETED
+        type: 'CLEAR_COMPLETED'
       }, {
-        type: types.ADD_TODO,
+        type: 'ADD_TODO',
         text: 'Write more tests'
       }].reduce(todos, [{
         id: 0,
@@ -231,13 +238,13 @@ describe('todos reducer', () => {
         text: 'Write tests'
       }])
     ).toEqual([{
-      text: 'Write more tests',
-      completed: false,
-      id: 2
-    }, {
       text: 'Write tests',
       completed: false,
       id: 1
+    }, {
+      text: 'Write more tests',
+      completed: false,
+      id: 2
     }]);
   });
 });

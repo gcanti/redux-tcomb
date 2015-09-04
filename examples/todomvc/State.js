@@ -1,4 +1,4 @@
-import { t } from 'redux-tcomb';
+import { t } from '../../lib';
 
 const Todo = t.struct({
   id: t.Number,

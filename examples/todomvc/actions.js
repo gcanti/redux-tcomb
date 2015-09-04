@@ -1,4 +1,4 @@
-import { t } from 'redux-tcomb';
+import { t } from '../../lib';
 
 //
 // actions
@@ -67,5 +67,5 @@ COMPLETE_ALL.prototype.patch = function (state) {
 };
 
 CLEAR_COMPLETED.prototype.patch = function (state) {
-  return state.map(todo => t.update(todo, { completed: { $set: false } }));
+  return state.filter(todo => todo.completed === false);
 };

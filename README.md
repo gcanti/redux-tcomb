@@ -2,19 +2,21 @@ Immutable and type checked state / actions for redux
 
 # Why?
 
+In my experience type checking dramatically speeds up development and provides a nice DX.
+
 ## Primary goals
 
 - actions are naked (*), immutables and type checked
 - state is naked (*), immutable and type checked
 - actions are defined as [tcomb](https://github.com/gcanti/tcomb) structs, this means that constructors can be used as **action creators**
 
-(*) works like regular objects and arrays
+(*) work like regular objects and arrays
 
 ## Secondary goals
 
 - get rid of constants
-- get rid of action creators
 - get rid of `switch`
+- get rid of action creators if possible (not yet achieved)
 
 # Is this slow?
 
@@ -54,7 +56,7 @@ Type checked state means...
 import State from './State';
 
 // try to mess up with the state
-new State(1); // => will throw "[tcomb] Invalid value 1 supplied to State (expected an array of Todo)"
+new State(1); // => will throw "Invalid value 1 supplied to State (expected an array of Todo)"
 const state = new State([]): // => ok, state is immutable
 ```
 
@@ -65,7 +67,7 @@ const state = new State([]): // => ok, state is immutable
 
 import { t } from 'redux-tcomb';
 
-// defines an object like { text: 'Build my first Redux app' }
+// defines an object like { text: 'Use redux-tcomb' }
 export const ADD_TODO = t.struct({
   text: t.String
 }, 'ADD_TODO');
@@ -83,8 +85,8 @@ export const EDIT_TODO = t.struct({
 Type checked actions means...
 
 ```js
-const action = ADD_TODO({}); // => throws "[tcomb] Invalid value undefined supplied to ADD_TODO/text: String"
-const action = ADD_TODO({ text: 'Build my first Redux app' }); // => ok, action is immutable
+const action = ADD_TODO({}); // => throws "Invalid value undefined supplied to ADD_TODO/text: String"
+const action = ADD_TODO({ text: 'Use redux-tcomb' }); // => ok, action is immutable
 ```
 
 ## 2.1 Define the **patch function** for each action
@@ -120,10 +122,10 @@ const store = createStore(reducer);
 
 store.dispatch({
   type: 'ADD_TODO',
-  text: 'Build my first Redux app'
+  text: 'Use redux-tcomb'
 });
 
-store.getState(); // => { todos: [ { id: 0, text: 'Build my first Redux app', completed: false } ] }
+store.getState(); // => { todos: [ { id: 0, text: 'Use redux-tcomb', completed: false } ] }
 ```
 
 # License

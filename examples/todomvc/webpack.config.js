@@ -30,13 +30,3 @@ module.exports = {
   }
 };
 
-
-// When inside redux-tcomb repo, prefer src to compiled version.
-// You can safely delete these lines in your project.
-var reduxTcombSrc = path.join(__dirname, '..', '..', 'lib');
-var reduxTcombNodeModules = path.join(__dirname, '..', '..', 'node_modules');
-var fs = require('fs');
-if (fs.existsSync(reduxTcombSrc) && fs.existsSync(reduxTcombNodeModules)) {
-  // Resolve Redux to source
-  module.exports.resolve = { alias: { 'redux-tcomb': reduxTcombSrc } };
-}
