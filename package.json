@@ -1,8 +1,8 @@
 {
   "name": "redux-tcomb",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Type checking and DDD for JavaScript",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "lint": "eslint index.js"
   },

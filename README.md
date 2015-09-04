@@ -16,13 +16,21 @@ Immutable and type checked state / actions for redux
 - get rid of action creators
 - get rid of `switch`
 
+# Is this slow?
+
+Nope. `Object.freeze` calls and the asserts are executed only in development and stripped out in production (using `process.env.NODE_ENV = 'production'` tests).
+
 # Workflow
 
 1. define the state structure
 2. define the actions and their effect on state (patch functions)
 3. wire them up and grab the automatically generated reducer
 
-# Example
+# Complete examples
+
+- [examples/todomvc](examples/todomvc)
+
+# Code example
 
 ## 1. Type checked state
 
@@ -107,7 +115,7 @@ import { createUnion, createReducer } from 'redux-tcomb';
 
 const initialState = State([]); // the initial state
 const Action = createUnion(actions); // a type representing the union of all the actions
-const reducer = createReducer(initialState, Action); // no need to implement the reducer
+const reducer = createReducer(initialState, Action, State); // no need to implement the reducer
 const store = createStore(reducer);
 
 store.dispatch({
