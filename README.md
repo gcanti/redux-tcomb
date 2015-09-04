@@ -125,3 +125,7 @@ store.dispatch({
 
 store.getState(); // => { todos: [ { id: 0, text: 'Build my first Redux app', completed: false } ] }
 ```
+
+# License
+
+The MIT License (MIT)
