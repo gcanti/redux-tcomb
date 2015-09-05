@@ -1,5 +1,6 @@
-import { getCheckedReducer, t } from '../../../lib';
+import { createUnion, getCheckedReducer } from '../../../lib';
 import State from '../State';
+import * as actions from '../actionTypes';
 import { combineReducers } from 'redux';
 import {
   SELECT_REDDIT, INVALIDATE_REDDIT,
@@ -60,4 +61,6 @@ const rootReducer = combineReducers({
   selectedReddit
 });
 
-export default getCheckedReducer(rootReducer, State, t.Object);
+const Action = createUnion(actions);
+
+export default getCheckedReducer(rootReducer, State, Action);
