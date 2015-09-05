@@ -30,7 +30,8 @@ Nope. `Object.freeze` calls and the asserts are executed only in development and
 
 # Complete examples
 
-- [examples/todomvc](examples/todomvc)
+- [examples/todomvc](examples/todomvc) (automatically generated reducer)
+- [examples/async](examples/async) (type checking with a standard redux reducer)
 
 # Code example
 
@@ -128,30 +129,17 @@ store.dispatch({
 store.getState(); // => { todos: [ { id: 0, text: 'Use redux-tcomb', completed: false } ] }
 ```
 
-The automatically generated reducer is opt-in, you can get type safety with a "normal" reducer
+The automatically generated reducer is opt-in, you can get type safety with a "standard" reducer
 
 ```js
 import State from './State';
 import * as actions from './actions';
-import { createUnion, t } from 'redux-tcomb';
-import reducer from './your-normal-reducer';
+import { createUnion, getCheckedReducer } from 'redux-tcomb';
+import standardReducer from './your-standard-reducer';
 
 const Action = createUnion(actions);
 
-function isValidAction(action) {
-  return action.type && action.type.indexOf('@@') !== 0;
-}
-
-export default function typeCheckedReducer(state, action) {
-  if (process.env.NODE_ENV !== 'production') {
-    if (isValidAction(action)) {
-      // type check the input
-      Action(action);
-    }
-  }
-  // type check the output
-  return State(reducer(State(state), action));
-};
+export default getCheckedReducer(standardReducer, State, Action);
 ```
 
 # License
