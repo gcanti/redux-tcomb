@@ -8,15 +8,15 @@ In my experience type checking dramatically speeds up development and provides a
 
 - actions are naked (*), immutables and type checked
 - state is naked (*), immutable and type checked
-- actions are defined as [tcomb](https://github.com/gcanti/tcomb) structs, this means that constructors can be used as **action creators**
 
 (*) work like regular objects and arrays
+
+**Note**. Actions are defined as [tcomb](https://github.com/gcanti/tcomb) structs, this means that constructors can be used as action creators.
 
 ## Secondary goals
 
 - get rid of constants
 - get rid of `switch`
-- get rid of action creators if possible (not yet achieved)
 
 # Is this slow?
 
@@ -26,7 +26,7 @@ Nope. `Object.freeze` calls and the asserts are executed only in development and
 
 1. define the state structure
 2. define the actions and their effect on state (patch functions)
-3. wire them up and grab the automatically generated reducer
+3. wire them up and grab the automatically generated reducer (opt-in, you can use a "normal" reducer, see later)
 
 # Complete examples
 
@@ -126,6 +126,32 @@ store.dispatch({
 });
 
 store.getState(); // => { todos: [ { id: 0, text: 'Use redux-tcomb', completed: false } ] }
+```
+
+The automatically generated reducer is opt-in, you can get type safety with a "normal" reducer
+
+```js
+import State from './State';
+import * as actions from './actions';
+import { createUnion, t } from 'redux-tcomb';
+import reducer from './your-normal-reducer';
+
+const Action = createUnion(actions);
+
+function isValidAction(action) {
+  return action.type && action.type.indexOf('@@') !== 0;
+}
+
+export default function typeCheckedReducer(state, action) {
+  if (process.env.NODE_ENV !== 'production') {
+    if (isValidAction(action)) {
+      // type check the input
+      Action(action);
+    }
+  }
+  // type check the output
+  return State(reducer(State(state), action));
+};
 ```
 
 # License
