@@ -1,4 +1,4 @@
-Immutable and type checked state / actions for redux
+Immutable and type checked state / actions for redux (built on [tcomb](https://github.com/gcanti/tcomb) library)
 
 # Why?
 
