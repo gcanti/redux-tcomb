@@ -11,8 +11,6 @@ In my experience type checking dramatically speeds up development and provides a
 
 (*) work like regular objects and arrays
 
-**Note**. Actions are defined as [tcomb](https://github.com/gcanti/tcomb) structs, this means that constructors can be used as action creators.
-
 ## Secondary goals
 
 - get rid of constants
@@ -25,8 +23,8 @@ Nope. `Object.freeze` calls and the asserts are executed only in development and
 # Workflow
 
 1. define the state structure
-2. define the actions and their effect on state (patch functions)
-3. wire them up and grab the automatically generated reducer (opt-in, you can use a "normal" reducer, see later)
+2. define the actions (and optionally their effect on state)
+3. wire them up and grab the automatically generated reducer (opt-in, **you can use a "standard" reducer**, see later)
 
 # Complete examples
 
@@ -35,7 +33,7 @@ Nope. `Object.freeze` calls and the asserts are executed only in development and
 
 # Code example
 
-## 1. Type checked state
+## 1. Type-checked state
 
 ```js
 // State.js
@@ -51,7 +49,7 @@ const Todo = t.struct({
 export default t.list(Todo, 'State'); // the state is a list of `Todo`s
 ```
 
-Type checked state means...
+Type-checked state means...
 
 ```js
 import State from './State';
@@ -61,7 +59,7 @@ new State(1); // => will throw "Invalid value 1 supplied to State (expected an a
 const state = new State([]): // => ok, state is immutable
 ```
 
-# 2. Type checked actions
+# 2. Type-checked actions
 
 ```js
 // actions.js
@@ -83,17 +81,45 @@ export const EDIT_TODO = t.struct({
 // constants are defined as export names
 ```
 
-Type checked actions means...
+Type-checked actions means...
 
 ```js
 const action = ADD_TODO({}); // => throws "Invalid value undefined supplied to ADD_TODO/text: String"
 const action = ADD_TODO({ text: 'Use redux-tcomb' }); // => ok, action is immutable
 ```
 
-## 2.1 Define the **patch function** for each action
+Time to wire them up...
+
+# 3. The reducer
+
+You have 2 options:
+
+- get type safety with a "standard" reducer
+- automatically generate the reducer
+
+## Standard reducer
 
 ```js
-// a patch is a function state -> state
+import State from './State';
+import * as actions from './actions';
+import { createUnion, getCheckedReducer } from 'redux-tcomb';
+import standardReducer from './your-standard-reducer';
+
+const Action = createUnion(actions);
+
+// getCheckedReducer returns a type safe version of your reducer
+export default getCheckedReducer(standardReducer, State, Action);
+```
+
+## The automatically generated reducer
+
+First you need to define a **patch function** for each action:
+
+```js
+
+// a patch is a function (state) => state
+// that represents the effect of the action on the state
+
 ADD_TODO.prototype.patch = function (state) {
 
   // tcomb immutable helpers
@@ -106,9 +132,7 @@ ADD_TODO.prototype.patch = function (state) {
 };
 ```
 
-Time to wire them up...
-
-## 3. Automatically generated reducer
+Then you get the automatically generated reducer form the `createReducer` API:
 
 ```js
 import { createStore } from 'redux';
@@ -118,7 +142,10 @@ import { createUnion, createReducer } from 'redux-tcomb';
 
 const initialState = State([]); // the initial state
 const Action = createUnion(actions); // a type representing the union of all the actions
-const reducer = createReducer(initialState, Action, State); // no need to implement the reducer
+
+// here we are, no need to implement the reducer
+const reducer = createReducer(initialState, Action, State);
+
 const store = createStore(reducer);
 
 store.dispatch({
@@ -127,19 +154,6 @@ store.dispatch({
 });
 
 store.getState(); // => { todos: [ { id: 0, text: 'Use redux-tcomb', completed: false } ] }
-```
-
-The automatically generated reducer is opt-in, you can get type safety with a "standard" reducer
-
-```js
-import State from './State';
-import * as actions from './actions';
-import { createUnion, getCheckedReducer } from 'redux-tcomb';
-import standardReducer from './your-standard-reducer';
-
-const Action = createUnion(actions);
-
-export default getCheckedReducer(standardReducer, State, Action);
 ```
 
 # License
