@@ -1,3 +1,5 @@
+[![build status](https://img.shields.io/travis/gcanti/redux-tcomb/master.svg?style=flat-square)](https://travis-ci.org/gcanti/redux-tcomb)
+
 Immutable and type-checked state and actions for Redux (built on [tcomb](https://github.com/gcanti/tcomb) library)
 
 # Why?
@@ -132,7 +134,7 @@ ADD_TODO.prototype.patch = function (state) {
 };
 ```
 
-Then you get the automatically generated reducer form the `createReducer` API:
+Then you get the automatically generated reducer form the `createReducer(initialState, Action, [State])` API:
 
 ```js
 import { createStore } from 'redux';

@@ -1,4 +1,4 @@
-import { t } from '../../lib';
+import { t } from '../../.';
 
 //
 // actions

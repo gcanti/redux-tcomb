@@ -1,4 +1,4 @@
-import { t } from '../../lib';
+import { t } from '../../.';
 
 const Todo = t.struct({
   id: t.Number,

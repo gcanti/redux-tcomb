@@ -1,4 +1,4 @@
-import { t } from '../../lib';
+import { t } from '../../.';
 
 const Posts = t.struct({
   didInvalidate: t.Boolean,

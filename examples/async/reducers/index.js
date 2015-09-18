@@ -1,4 +1,4 @@
-import { createUnion, getCheckedReducer } from '../../../lib';
+import { createUnion, getCheckedReducer } from '../../../.';
 import State from '../State';
 import * as actions from '../actionTypes';
 import { combineReducers } from 'redux';
