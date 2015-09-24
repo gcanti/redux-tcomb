@@ -12,7 +12,7 @@
 **Note**: Gaps between patch versions are faulty/broken releases.
 **Note**: A feature tagged as Experimental is in a high state of flux, you're at risk of it changing without notice.
 
-## v0.1.4
+## v0.1.5
 
 - **Internal**
   - relax isReduxAction, fix #2
