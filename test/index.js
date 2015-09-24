@@ -1,9 +1,11 @@
 var tape = require('tape');
+var combineReducers = require('redux').combineReducers;
 var reduxTcomb = require('../.');
 var t = reduxTcomb.t;
 var createUnion = reduxTcomb.createUnion;
 var getCheckedReducer = reduxTcomb.getCheckedReducer;
 var createReducer = reduxTcomb.createReducer;
+var isReduxAction = require('../lib/isReduxAction');
 var actions = require('./actions');
 
 var Todo = t.struct({
@@ -152,7 +154,7 @@ tape('getCheckedReducer', function (test) {
 
   test.test('should not check redux internal actions', function (assert) {
     assert.plan(1);
-    assert.strictEqual(checkedReducer(initialState, {type: '@@INIT'}), initialState);
+    assert.strictEqual(checkedReducer(initialState, {type: '@@redux/INIT'}), initialState);
   });
 
   test.test('should check the returned state', function (assert) {
@@ -164,6 +166,23 @@ tape('getCheckedReducer', function (test) {
       assert.strictEqual(e.message, '[tcomb] Invalid value undefined supplied to State/todos: Array<Todo> (expected an array of Todo)');
     }
 
+  });
+
+  test.test('should handle combineReducers', function (assert) {
+    assert.plan(1);
+
+    function todoReducer(state, action) {
+      if (!isReduxAction(action)) {
+        Action(action);
+      }
+      return state || [];
+    }
+
+    var reducer = combineReducers({
+      todos: todoReducer
+    });
+
+    assert.deepEqual(reducer(undefined, {type: 'ADD_TODO', text: 'Use redux-tcomb'}), {todos: []}); // ok
   });
 
 });
@@ -199,7 +218,7 @@ tape('createReducer', function (test) {
   test.test('should not check redux internal actions', function (assert) {
     assert.plan(1);
     var reducer = createReducer(initialState, Action, State);
-    assert.strictEqual(reducer(undefined, {type: '@@INIT'}), initialState);
+    assert.strictEqual(reducer(undefined, {type: '@@redux/INIT'}), initialState);
   });
 
   test.test('should handle initialState', function (assert) {
