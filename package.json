@@ -3,6 +3,10 @@
   "version": "0.1.6",
   "description": "Immutable and type-checked state and actions for Redux",
   "main": "index.js",
+  "files": [
+    "index.js",
+    "lib/"
+  ],
   "scripts": {
     "lint": "eslint index.js",
     "test": "npm run lint && karma start"
