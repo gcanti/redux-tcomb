@@ -1,6 +1,6 @@
 {
   "name": "redux-tcomb",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "Immutable and type-checked state and actions for Redux",
   "main": "index.js",
   "files": [
@@ -8,7 +8,7 @@
     "lib/"
   ],
   "scripts": {
-    "lint": "eslint index.js",
+    "lint": "eslint index.js lib",
     "test": "npm run lint && karma start"
   },
   "repository": {
@@ -23,7 +23,7 @@
   "homepage": "https://github.com/gcanti/redux-tcomb",
   "dependencies": {
     "redux": "^3.0.0",
-    "tcomb": "^2.3.0"
+    "tcomb": "^3.1.0"
   },
   "devDependencies": {
     "browserify": "^9.0.8",
@@ -33,7 +33,6 @@
     "karma-chrome-launcher": "0.2.0",
     "karma-firefox-launcher": "^0.1.4",
     "karma-tap": "1.0.3",
-    "redux": "^3.0.0",
     "tape": "4.0.0"
   },
   "tags": [
