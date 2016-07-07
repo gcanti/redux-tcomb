@@ -51,11 +51,13 @@ store.dispatch({ type: 'INCRE', delta: 1 }) // throws [tcomb] Invalid value { "t
 
 # API
 
-## `createCheckedMiddleware(Action: Type) -> Function`
+```js
+type Reducer = (state: State, action: Action) => State;
+```
 
-## `createCheckedReducer(reducer: Function, State: Type) -> Function`
-
-## `createActionType(actions: {[key: string]: Type}) -> Type`
+- `createCheckedMiddleware(Action: Type) -> Function`
+- `createCheckedReducer(reducer: Reducer, State: Type) -> Reducer`
+- `createActionType(actions: {[key: string]: Type}) -> Type`
 
 # License
 
