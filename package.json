@@ -1,6 +1,6 @@
 {
   "name": "redux-tcomb",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Immutable and type-checked state and actions for Redux",
   "main": "index.js",
   "files": [
